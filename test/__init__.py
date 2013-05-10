@@ -1,1 +1,1 @@
-import test_foo
+import test_host
