@@ -1,3 +1,4 @@
+import yaml
 from holst.core import Host
 
 class Parser():
@@ -6,5 +7,11 @@ class Parser():
     pass
 
   def parse(self, parse):
-    return { "hosts" : { "foo": Host("foo") } }
-  
+    obj = yaml.load(parse)
+    ret = { "hosts" : {} }
+
+    for k,v in obj.iteritems():
+      if v["type"] == "host":
+        ret["hosts"][k] = Host(k)
+
+    return ret
