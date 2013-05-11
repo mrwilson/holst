@@ -12,6 +12,6 @@ class Parser():
 
     for k,v in obj.iteritems():
       if v["type"] == "host":
-        ret["hosts"][k] = Host(k)
+        ret["hosts"][k] = Host(k, v)
 
     return ret
