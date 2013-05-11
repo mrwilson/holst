@@ -6,9 +6,10 @@ class HostTest(unittest.TestCase):
   
   def test_get_host(self):
     parser = Parser()
-    host = parser.parse("""
+    out = parser.parse("""
       foo:
         type: host
     """)
-    assert host.hostname == "foo"
+    assert len(out["hosts"]) == 1
+    assert "foo" in out["hosts"].keys()
 

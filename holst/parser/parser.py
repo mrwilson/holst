@@ -6,5 +6,5 @@ class Parser():
     pass
 
   def parse(self, parse):
-    return Host("foo")    
+    return { "hosts" : { "foo": Host("foo") } }
   
