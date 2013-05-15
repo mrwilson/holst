@@ -17,10 +17,25 @@ class Parser():
         self.services[k] = Service(k,v)
 
     for hostname, host in self.hosts.iteritems():
-      if len([x for x in host.services if x not in self.services.keys()]) > 0:
-        raise Exception("Undefined services")
+      for service in host.services:
+        self.validate_service(service)
 
     return { "hosts" : self.hosts, "services": self.services }
+
+
+  def validate_service(self, service):
+    if type(service) is dict:
+      service_name = service.keys()[0];
+      hosts = service[service_name]
+      if not hosts <= self.hosts.keys():
+        raise Exception("Undefined host")
+      if not service_name in self.services.keys():
+        raise Exception("Undefined service")
+      return
+
+    if not service in self.services.keys():
+      raise Exception("Undefined service")
+
 
   def get_rules_for(self,hostname):
 
@@ -28,10 +43,18 @@ class Parser():
       raise Exception("Host not found")
 
     rules = []
-    host = self.hosts[hostname]
+    host = self.hosts.get(hostname)
 
     for service in host.services:
-      for rule in self.services[service].rules:
-        rules.append(rule.to_rule())
+      if type(service) is dict:
+        service_name, hosts = service.popitem()
+
+        service_hosts = [item for name,item in self.hosts.iteritems() if name in hosts]
+
+        service_rules = self.services[service_name].create_rules(service_hosts)
+      else:
+        service_rules = self.services[service].create_rules()
+      for rule in service_rules:
+        rules.append(rule)
 
     return rules

@@ -41,8 +41,9 @@ class ServiceTest(unittest.TestCase):
     """)
 
     example_service = out["services"]["example"]
-    assert len(example_service.rules) == 1
-    assert example_service.rules.pop().to_rule() == "-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT"
+    rules = example_service.create_rules()
+    assert len(rules) == 1
+    assert rules.pop() == "-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT"
 
   @test
   def parse_rule_remove_duplicates(self):
@@ -58,4 +59,4 @@ class ServiceTest(unittest.TestCase):
     """)
 
     example_service = out["services"]["example"]
-    assert len(example_service.rules) == 2
+    assert len(example_service.create_rules()) == 2

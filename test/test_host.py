@@ -11,6 +11,7 @@ class HostTest(unittest.TestCase):
     out = parser.parse("""
       foo:
         type: host
+        ip: 1.2.3.4
     """)
     assert len(out["hosts"]) == 1
     assert "foo" in out["hosts"].keys()
@@ -30,6 +31,7 @@ class HostTest(unittest.TestCase):
     out = parser.parse("""
       foo:
         type: host
+        ip: 1.2.3.4
     """)
     foo = out["hosts"]["foo"]
     assert len(foo.services) == 0

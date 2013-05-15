@@ -23,6 +23,7 @@ class HostServiceTest(unittest.TestCase):
 
     parser.parse("""
       example:
+        ip: 1.2.3.4
         type: host
         services:
           - http
@@ -40,5 +41,26 @@ class HostServiceTest(unittest.TestCase):
     """)
 
     rules = parser.get_rules_for("example")
-
     assert len(rules) == 2
+
+  @raises(Exception)
+  @test
+  def define_service_only_from_certain_hosts_fail_if_no_ip(self):
+    parser = Parser()
+
+    parser.parse("""
+      source:
+        type: host
+
+      example:
+        type: host
+        services:
+          - ssh: [source]
+
+      ssh:
+        type: service
+        rules:
+          - accept: ["tcp", 22]
+    """)
+
+    rules = parser.get_rules_for("example")
