@@ -11,11 +11,11 @@ class ServiceTest(unittest.TestCase):
     parser = Parser()
 
     out = parser.parse("""
-      foo:
+      example:
         type: service
     """)
     assert len(out["services"]) == 1
-    assert isinstance(out["services"]["foo"], Service)
+    assert isinstance(out["services"]["example"], Service)
 
   @raises(Exception)
   @test
@@ -23,8 +23,24 @@ class ServiceTest(unittest.TestCase):
     parser = Parser()
 
     out = parser.parse("""
-      foo:
+      example:
         type: host
         services:
           - notcreated
     """)
+
+  @test
+  def parse_rule(self):
+    parser = Parser()
+
+    out = parser.parse("""
+      example:
+        type: service
+        rule:
+          accept: ["tcp", 80]
+    """)
+
+    example_service = out["services"]["example"]
+    assert len(example_service.rules) == 1
+    assert example_service.rules[0].to_rule() == "-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT"
+    
