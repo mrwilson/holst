@@ -6,4 +6,3 @@ class Host():
       self.services = props["services"]
     else:
       self.services = []
-    
