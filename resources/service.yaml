@@ -1,0 +1,5 @@
+http:
+  type: service
+  rules:
+    accept: ["tcp", 80]   # Accept TCP connections on port 80 (HTTP)
+    accept: ["tcp", 443]  # Accept TCP connections on port 443 (HTTPS)

@@ -1,0 +1,16 @@
+example_host1:
+  type: host
+
+example_host2:
+  type: host
+
+example_hostgroup_1:
+  type: hostgroup
+  hosts:
+    - example_host1
+
+example_hostgroup_2:
+  type: hostgroup
+  hosts:
+    - example_hostgroup_1
+    - example_host2
