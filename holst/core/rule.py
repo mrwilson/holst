@@ -11,7 +11,11 @@ class Rule(object):
 
     if self.hosts:
       for host in self.hosts:
-        rules.append("-A INPUT -s %s -p %s -m %s --dport %d -j %s" % (host.ip, self.protocol, self.protocol, self.dport, self.operation.upper()))
+        if type(host.ip) is list:
+          for ip in host.ip:
+            rules.append("-A INPUT -s %s -p %s -m %s --dport %d -j %s" % (ip, self.protocol, self.protocol, self.dport, self.operation.upper()))
+        else:
+            rules.append("-A INPUT -s %s -p %s -m %s --dport %d -j %s" % (host.ip, self.protocol, self.protocol, self.dport, self.operation.upper()))
     else:
       rules.append("-A INPUT -p %s -m %s --dport %d -j %s" % (self.protocol, self.protocol, self.dport, self.operation.upper()))
 
