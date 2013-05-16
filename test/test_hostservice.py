@@ -88,3 +88,28 @@ class HostServiceTest(unittest.TestCase):
 
     rules = parser.get_rules_for("example")
     assert len(rules) == 2
+
+  @test
+  def define_service_only_from_certain_hosts_multiple_ips(self):
+    parser = Parser()
+                                                               
+    parser.parse("""
+      source:
+        type: host
+        ip: 1.2.3.4
+                                                               
+      example:
+        type: host
+        ip: 9.10.11.12
+        services:
+          - ssh: [source]
+                                                               
+      ssh:
+        type: service
+        rules:
+          - accept: ["tcp", 22, 23, 24]
+    """)
+                                                               
+    rules = parser.get_rules_for("example")
+    assert len(rules) == 1
+    assert "-m multiport --dports 22,23,24" in rules[0]
