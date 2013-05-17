@@ -5,7 +5,7 @@ setup(name='holst',
   description='Generate iptables files from yaml dsl',
   author='Alex Wilson',
   author_email='a.wilson@alumni.warwick.ac.uk',
-  packages=['holst'],
+  packages=['holst', 'holst.parser', 'holst.core'],
   entry_points = {
   'console_scripts': ['holst=holst:main']
   },
