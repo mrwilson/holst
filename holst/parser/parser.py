@@ -27,8 +27,13 @@ class Parser():
     if type(service) is dict:
       service_name = service.keys()[0];
       hosts = service[service_name]
+
+      if len(hosts) == 1 and hosts[0] == "all":
+        return
+
       if not hosts <= self.hosts.keys():
         raise Exception("Undefined host")
+
       if not service_name in self.services.keys():
         raise Exception("Undefined service")
       return
@@ -36,6 +41,16 @@ class Parser():
     if not service in self.services.keys():
       raise Exception("Undefined service")
 
+  def get_header(self, hostname):
+    header = ["*nat", ":PREROUTING ACCEPT", ":POSTROUTING ACCEPT", ":OUTPUT ACCEPT"]
+    header.extend(["*filter", ":INPUT DROP", ":OUTPUT ACCEPT", ":FORWARD DROP"])
+
+    host = self.hosts.get(hostname)
+
+    for service in host.services:
+      header.append(":%s -" % service)
+
+    return header
 
   def get_rules_for(self,hostname):
 

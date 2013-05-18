@@ -26,8 +26,8 @@ class HostServiceTest(unittest.TestCase):
         ip: 1.2.3.4
         type: host
         services:
-          - http
-          - ssh
+          - http: [all]
+          - ssh: [all]
 
       http:
         type: service
@@ -90,7 +90,7 @@ class HostServiceTest(unittest.TestCase):
     assert len(rules) == 2
 
   @test
-  def define_service_only_from_certain_hosts_multiple_ips(self):
+  def define_service_multiple_ports(self):
     parser = Parser()
                                                                
     parser.parse("""
