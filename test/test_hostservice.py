@@ -112,4 +112,4 @@ class HostServiceTest(unittest.TestCase):
                                                                
     rules = parser.get_rules_for("example")
     assert len(rules) == 1
-    assert "-A ssh -s 1.2.3.4" in rules[0]
+    assert "-A ssh -s 1.2.3.4 -j ACCEPT" in rules[0]
