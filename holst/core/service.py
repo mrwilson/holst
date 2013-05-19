@@ -10,8 +10,6 @@ class Service():
 
   def create_rules(self, hosts=None):
 
-    print self.rule_template  
-
     for rule in self.rule_template:
       self.rules |= set(Rule(rule, self.name, hosts).get_rules())
 
@@ -27,7 +25,6 @@ class Service():
       if len(rule) == 2:
         chains.append("-A INPUT -p %s -m %s --dport %d -m state --state NEW -j %s" % (rule[0], rule[0], rule[1], self.name))
       else:
-        print rule
         chains.append("-A INPUT -p %s -m multiport --dports %s -m state --state NEW -j %s" % (rule[0], ",".join(map(str,rule[1:])), self.name))
 
     return chains

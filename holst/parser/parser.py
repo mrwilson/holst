@@ -47,8 +47,12 @@ class Parser():
 
     host = self.hosts.get(hostname)
 
+    if type(host.services) is dict:
+      header.append(":%s -" % host.services.keys()[0])
+      return header
+
     for service in host.services:
-      header.append(":%s -" % service)
+      header.append(":%s -" % service.keys()[0])
 
     return header
 
