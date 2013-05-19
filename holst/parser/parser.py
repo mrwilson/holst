@@ -41,9 +41,17 @@ class Parser():
     if not service in self.services.keys():
       raise Exception("Undefined service")
 
-  def get_header(self, hostname):
-    header = ["*nat", ":PREROUTING ACCEPT", ":POSTROUTING ACCEPT", ":OUTPUT ACCEPT"]
-    header.extend(["*filter", ":INPUT DROP", ":OUTPUT ACCEPT", ":FORWARD DROP"])
+  def nat_header(self):
+    return ["*nat",
+            ":PREROUTING ACCEPT",
+            ":POSTROUTING ACCEPT",
+            ":OUTPUT ACCEPT"]
+
+  def filter_header(self, hostname):
+    header = ["*filter",
+              ":INPUT DROP",
+              ":OUTPUT ACCEPT",
+              ":FORWARD DROP"]
 
     host = self.hosts.get(hostname)
 

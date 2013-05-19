@@ -21,7 +21,7 @@ class HeaderTest(unittest.TestCase):
           example_service: [all]
     """)
 
-    header = parser.get_header("example_host")
+    header = parser.filter_header("example_host")
   
     assert ":example_service -" in header
 
