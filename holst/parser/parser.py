@@ -52,6 +52,20 @@ class Parser():
 
     return header
 
+  def get_chains(self, hostname):
+    chains = []
+
+    host = self.hosts.get(hostname)
+
+    if len(host.services) == 1:
+      return self.services[host.services.keys()[0]].get_chain()
+
+    for service_obj in host.services:
+      service = service_obj.keys()[0]
+      chains.extend(self.services[service].get_chain())
+
+    return chains
+
   def get_rules_for(self,hostname):
 
     if (hostname not in self.hosts):

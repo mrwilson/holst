@@ -8,8 +8,6 @@ class Rule(object):
 
   def get_rules(self):
 
-    print self.hosts
-
     if self.hosts == ["all"]:
       return ["-A %s -j %s" % (self.name, self.operation.upper())]
 

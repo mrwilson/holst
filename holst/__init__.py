@@ -9,16 +9,20 @@ def main():
   filename = sys.argv[1]
   hostname = sys.argv[2]
 
-  rules = []
+  out = []
 
   try:
     with open(filename) as template_file:
       parser = Parser()
+
       parser.parse(template_file.read())
-      rules = parser.get_rules_for(hostname)
+
+      out.extend(parser.get_header(hostname))
+      out.extend(parser.get_chains(hostname))
+      out.extend(parser.get_rules_for(hostname))
   except IOError:
     print 'Cannot access file: %s' % filename
     sys.exit(1)
 
-  for rule in rules:
-    print rule
+  for line in out:
+    print line
