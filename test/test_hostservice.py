@@ -23,7 +23,7 @@ class HostServiceTest(unittest.TestCase):
 
     parser.parse("""
       example:
-        ip: 1.2.3.4
+        ip: [1.2.3.4]
         type: host
         services:
           - http: [all]
@@ -76,7 +76,7 @@ class HostServiceTest(unittest.TestCase):
 
       example:
         type: host
-        ip: 9.10.11.12
+        ip: [9.10.11.12]
         services:
           - ssh: [source]
 
@@ -96,11 +96,11 @@ class HostServiceTest(unittest.TestCase):
     parser.parse("""
       source:
         type: host
-        ip: 1.2.3.4
+        ip: [1.2.3.4]
                                                                
       example:
         type: host
-        ip: 9.10.11.12
+        ip: [9.10.11.12]
         services:
           - ssh: [source]
                                                                
@@ -112,4 +112,4 @@ class HostServiceTest(unittest.TestCase):
                                                                
     rules = parser.get_rules_for("example")
     assert len(rules) == 1
-    assert "-m multiport --dports 22,23,24" in rules[0]
+    assert "-A ssh -s 1.2.3.4" in rules[0]

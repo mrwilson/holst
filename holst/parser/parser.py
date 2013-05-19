@@ -61,14 +61,15 @@ class Parser():
     host = self.hosts.get(hostname)
 
     for service in host.services:
-      if type(service) is dict:
-        service_name, hosts = service.popitem()
+      service_name, hosts = service.popitem()
 
+      if hosts == ["all"]:
+        service_hosts = ["all"]
+      else:
         service_hosts = [item for name,item in self.hosts.iteritems() if name in hosts]
 
-        service_rules = self.services[service_name].create_rules(service_hosts)
-      else:
-        service_rules = self.services[service].create_rules()
+      service_rules = self.services[service_name].create_rules(service_hosts)
+
       for rule in service_rules:
         rules.append(rule)
 
