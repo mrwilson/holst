@@ -1,11 +1,12 @@
 import yaml
-from holst.core import Host, Service
+from holst.core import Host, Service, HostGroup
 
 class Parser():
   
   def __init__(self):
     self.hosts = dict()
     self.services = dict()
+    self.hostgroups = dict()
     pass
 
   def parse(self, parse):
@@ -13,6 +14,8 @@ class Parser():
     for k,v in obj.iteritems():
       if v["type"] == "host":
         self.hosts[k] = Host(k, v)
+      if v["type"] == "hostgroup":
+        self.hostgroups[k] = HostGroup(v)
       else:
         self.services[k] = Service(k,v)
 
@@ -20,8 +23,15 @@ class Parser():
       for service in host.services:
         self.validate_service(service)
 
+    for hostgroupname, hostgroup in self.hostgroups.iteritems():
+      self.validate_hostgroup(hostgroup)
+
     return { "hosts" : self.hosts, "services": self.services }
 
+  def validate_hostgroup(self, hostgroup):
+    for host in hostgroup.hosts:
+      if not host in self.hosts.keys():
+        raise Exception("Undefined host in hostgroup")
 
   def validate_service(self, service):
     if type(service) is dict:
