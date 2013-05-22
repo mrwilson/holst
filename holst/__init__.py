@@ -1,32 +1,42 @@
 import sys
+import argparse
 from holst.parser import Parser
 
 def main():
-  if len(sys.argv) != 3:
-    print "Usage: holst <template-file> <host-name>"
-    sys.exit(0)
+  argparser = argparse.ArgumentParser(prog='holst', description='Transform DSL into iptables rule files.')
+  argparser.add_argument('templatefile', help='template file to read data from')
+  argparser.add_argument('hostname', help='name of host to generate files for')
+  argparser.add_argument('--allow-established', help='accept established connections by default', action="store_true")
 
-  filename = sys.argv[1]
-  hostname = sys.argv[2]
+  args = argparser.parse_args()
+  process(args)
+
+def process(args):
 
   out = []
 
-  try:
-    with open(filename) as template_file:
-      parser = Parser()
+  templatefile = args.templatefile
+  hostname = args.hostname
 
+  try:
+    with open(templatefile) as template_file:
+      parser = Parser()
       parser.parse(template_file.read())
 
-      out.extend(parser.nat_header())
-      out.extend(["COMMIT"])
+      print_list(parser.nat_header())
+      print "COMMIT\n"
 
-      out.extend(parser.filter_header(hostname))
-      out.extend(parser.get_chains(hostname))
-      out.extend(parser.get_rules_for(hostname))
-      out.extend(["COMMIT"])
+      print_list(parser.filter_header(hostname))
+
+      if args.allow_established:
+        print "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT\n"
+
+      print_list(parser.get_chains(hostname))
+      print_list(parser.get_rules_for(hostname))
+      print "COMMIT\n"
   except IOError:
-    print 'Cannot access file: %s' % filename
+    print 'Cannot access file: %s' % args.templatefile
     sys.exit(1)
 
-  for line in out:
-    print line
+def print_list(list_):
+  print "\n".join(list_), "\n"
