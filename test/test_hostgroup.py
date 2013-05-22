@@ -44,3 +44,34 @@ class HostGroupTest(unittest.TestCase):
         type: hostgroup
         hosts: [example]
     """)
+
+  @test
+  def error_if_hostgroup_contains_itself(self):
+    parser = Parser()
+    parser.parse("""
+      example1:
+        type: host
+        ip: [1.2.3.4]
+
+      example2:
+        type: host
+        ip: [5.6.7.8]
+
+      example:
+        type: hostgroup
+        hosts: [example1, example2]
+
+      service:
+        type: service
+        rules:
+          - accept: ["tcp", 80]
+
+      output:
+        type: host
+        ip: [9.10.11.12]
+        services:
+          - service: [example]
+    """)
+
+    rules = parser.get_rules_for("output")[0]
+    assert len(rules) == 2

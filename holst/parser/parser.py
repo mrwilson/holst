@@ -86,7 +86,8 @@ class Parser():
     host = self.hosts.get(hostname)
 
     if len(host.services) == 1:
-      chains.extend(self.services[host.services.keys()[0]].get_chain())
+      service = host.services[0].keys()[0]
+      chains.extend(self.services[service].get_chain())
       return chains
 
     for service_obj in host.services:
@@ -110,6 +111,10 @@ class Parser():
         service_hosts = ["all"]
       else:
         service_hosts = [item for name,item in self.hosts.iteritems() if name in hosts]
+        groups = [item for name, item in self.hostgroups.iteritems() if name in hosts]
+
+        for group in groups:
+          service_hosts.extend([item for name, item in self.hosts.iteritems() if name in group.hosts])
 
       service_rules = self.services[service_name].create_rules(service_hosts)
 

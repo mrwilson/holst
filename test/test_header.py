@@ -12,13 +12,13 @@ class HeaderTest(unittest.TestCase):
       example_service:
         type: service
         rules:
-          accept: ["tcp", 80]
+          - accept: ["tcp", 80]
 
       example_host:
         type: host
         ip: [1.2.3.4]
         services:
-          example_service: [all]
+          - example_service: [all]
     """)
 
     header = parser.filter_header("example_host")
@@ -38,7 +38,7 @@ class HeaderTest(unittest.TestCase):
         type: host
         ip: [1.2.3.4]
         services:
-          example_service: [all]
+          - example_service: [all]
     """)
 
     chains = parser.get_chains("example_host")
