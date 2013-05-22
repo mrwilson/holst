@@ -15,7 +15,7 @@ class Parser():
       if v["type"] == "host":
         self.hosts[k] = Host(k, v)
       if v["type"] == "hostgroup":
-        self.hostgroups[k] = HostGroup(v)
+        self.hostgroups[k] = HostGroup(k, v)
       else:
         self.services[k] = Service(k,v)
 
@@ -29,6 +29,9 @@ class Parser():
     return { "hosts" : self.hosts, "services": self.services }
 
   def validate_hostgroup(self, hostgroup):
+    if hostgroup.name in hostgroup.hosts:
+      raise Exception("Hostgroup cannot contain itself")
+
     for host in hostgroup.hosts:
       if not host in self.hosts.keys():
         raise Exception("Undefined host in hostgroup")

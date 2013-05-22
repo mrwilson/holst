@@ -35,10 +35,12 @@ class HostGroupTest(unittest.TestCase):
         hosts: [notexist]
     """)
 
-  @test
-  def error_if_hostgroup_shares_name_with_host(self):
-    pass
-
+  @raises(Exception)
   @test
   def error_if_hostgroup_contains_itself(self):
-    pass
+    parser = Parser()
+    parser.parse("""
+      example:
+        type: hostgroup
+        hosts: [example]
+    """)
