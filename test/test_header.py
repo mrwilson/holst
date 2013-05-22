@@ -23,7 +23,7 @@ class HeaderTest(unittest.TestCase):
 
     header = parser.filter_header("example_host")
   
-    assert ":example_service -" in header
+    assert ":example_service -" in [line for sublist in header for line in sublist]
 
   @test
   def render_ports_into_chains(self):

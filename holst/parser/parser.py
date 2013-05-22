@@ -48,19 +48,22 @@ class Parser():
             ":OUTPUT ACCEPT"]
 
   def filter_header(self, hostname):
-    header = ["*filter",
+    header = [["*filter",
               ":INPUT DROP",
               ":OUTPUT ACCEPT",
-              ":FORWARD DROP"]
+              ":FORWARD DROP"]]
 
     host = self.hosts.get(hostname)
 
-    if type(host.services) is dict:
-      header.append(":%s -" % host.services.keys()[0])
-      return header
+    service_chains = []
 
-    for service in host.services:
-      header.append(":%s -" % service.keys()[0])
+    if type(host.services) is dict:
+      service_chains.append(":%s -" % host.services.keys()[0])
+    else:
+      for service in host.services:
+        service_chains.append(":%s -" % service.keys()[0])
+
+    header.append(service_chains)
 
     return header
 
@@ -70,7 +73,8 @@ class Parser():
     host = self.hosts.get(hostname)
 
     if len(host.services) == 1:
-      return self.services[host.services.keys()[0]].get_chain()
+      chains.extend(self.services[host.services.keys()[0]].get_chain())
+      return chains
 
     for service_obj in host.services:
       service = service_obj.keys()[0]
@@ -96,7 +100,6 @@ class Parser():
 
       service_rules = self.services[service_name].create_rules(service_hosts)
 
-      for rule in service_rules:
-        rules.append(rule)
+      rules.append(service_rules)
 
     return rules

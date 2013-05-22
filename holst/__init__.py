@@ -12,31 +12,41 @@ def main():
   process(args)
 
 def process(args):
-
-  out = []
-
   templatefile = args.templatefile
   hostname = args.hostname
 
+  parser = Parser()
+
   try:
     with open(templatefile) as template_file:
-      parser = Parser()
       parser.parse(template_file.read())
 
-      print_list(parser.nat_header())
-      print "COMMIT\n"
+      for line in parser.nat_header():
+        print line
 
-      print_list(parser.filter_header(hostname))
+      print "\nCOMMIT\n"
+
+      for header in parser.filter_header(hostname):
+        for rule in header:
+          print rule
+        print ""
 
       if args.allow_established:
-        print "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT\n"
+        print "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"
+        print ""
 
-      print_list(parser.get_chains(hostname))
-      print_list(parser.get_rules_for(hostname))
-      print "COMMIT\n"
+      for chain in parser.get_chains(hostname):
+        print chain
+
+      print ""
+
+      for ruleset in parser.get_rules_for(hostname):
+        for rule in ruleset:
+          print rule
+        print ""
+
+      print "COMMIT"
   except IOError:
     print 'Cannot access file: %s' % args.templatefile
     sys.exit(1)
 
-def print_list(list_):
-  print "\n".join(list_), "\n"

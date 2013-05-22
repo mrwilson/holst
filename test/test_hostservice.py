@@ -86,7 +86,7 @@ class HostServiceTest(unittest.TestCase):
           - accept: ["tcp", 22]
     """)
 
-    rules = parser.get_rules_for("example")
+    rules = parser.get_rules_for("example")[0]
     assert len(rules) == 2
 
   @test
