@@ -1,7 +1,7 @@
 example_host:
   type: host
   service:
-    - example_service: [*]
+    - example_service: [all]
 
 example_service:
   type: service
