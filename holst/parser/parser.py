@@ -22,11 +22,11 @@ class Parser():
       else:
         self.services[k] = Service(k,v)
 
-    for hostname, host in self.hosts.iteritems():
+    for host in self.hosts.values():
       for service in host.services:
         self.validate_service(service)
 
-    for hostgroupname, hostgroup in self.hostgroups.iteritems():
+    for hostgroup in self.hostgroups.values():
       self.validate_hostgroup(hostgroup)
 
   def validate_hostgroup(self, hostgroup):
@@ -38,22 +38,17 @@ class Parser():
         raise UndefinedHostException("Undefined host in hostgroup: %s" % host)
 
   def validate_service(self, service):
-    if type(service) is dict:
-      service_name = service.keys()[0];
-      hosts = service[service_name]
+    service_name = service.keys()[0];
+    hosts = service[service_name]
 
-      if len(hosts) == 1 and hosts[0] == "all":
-        return
-
-      if not hosts <= self.hosts.keys():
-        raise UndefinedHostException("Undefined host")
-
-      if not service_name in self.services.keys():
-        raise Exception("Undefined service")
+    if len(hosts) == 1 and hosts[0] == "all":
       return
 
-    if not service in self.services.keys():
-      raise Exception("Undefined service")
+    if not hosts <= self.hosts.keys():
+      raise UndefinedHostException("Undefined host")
+
+    if not service_name in self.services.keys():
+      raise Exception("Undefined service - %s" % service_name)
 
   def nat_header(self):
     return ["*nat",
