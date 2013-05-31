@@ -9,39 +9,39 @@ class HostTest(unittest.TestCase):
   @test
   def get_host(self):
     parser = Parser()
-    out = parser.parse("""
-      foo:
+    parser.parse("""
+      example:
         type: host
         ip: 1.2.3.4
     """)
-    assert len(out["hosts"]) == 1
-    assert "foo" in out["hosts"].keys()
+    assert len(parser.hosts) == 1
+    assert "example" in parser.hosts.keys()
   
   @test
   def no_host(self):
     parser = Parser()
-    out = parser.parse("""
-      foo:
+    parser.parse("""
+      example:
         type: service      
     """) 
-    assert len(out["hosts"]) == 0
+    assert len(parser.hosts) == 0
 
   @test
   def host_no_services(self):
     parser = Parser()
-    out = parser.parse("""
-      foo:
+    parser.parse("""
+      example:
         type: host
         ip: 1.2.3.4
     """)
-    foo = out["hosts"]["foo"]
-    assert len(foo.services) == 0
+    example = parser.hosts["example"]
+    assert len(example.services) == 0
 
   @raises(MissingDataException)
   @test
   def error_if_no_ip(self):
     parser = Parser()
     out = parser.parse("""
-      foo:
+      example:
         type: host
     """)

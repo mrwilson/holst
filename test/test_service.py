@@ -9,13 +9,11 @@ class ServiceTest(unittest.TestCase):
   @test
   def parse_service(self):
     parser = Parser()
-
-    out = parser.parse("""
+    parser.parse("""
       example:
         type: service
     """)
-    assert len(out["services"]) == 1
-    assert isinstance(out["services"]["example"], Service)
+    assert len(parser.services) == 1
 
   @raises(Exception)
   @test

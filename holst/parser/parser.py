@@ -29,8 +29,6 @@ class Parser():
     for hostgroupname, hostgroup in self.hostgroups.iteritems():
       self.validate_hostgroup(hostgroup)
 
-    return { "hosts" : self.hosts, "services": self.services }
-
   def validate_hostgroup(self, hostgroup):
     if hostgroup.name in hostgroup.hosts:
       raise UndefinedHostException("Hostgroup cannot contain itself")
