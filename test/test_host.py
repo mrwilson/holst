@@ -1,7 +1,8 @@
 import unittest
-from holst.core import Host
+from holst.core import Host, MissingDataException
 from holst.parser import Parser
 from nose.tools import istest as test
+from nose.tools import raises
 
 class HostTest(unittest.TestCase):
  
@@ -35,3 +36,12 @@ class HostTest(unittest.TestCase):
     """)
     foo = out["hosts"]["foo"]
     assert len(foo.services) == 0
+
+  @raises(MissingDataException)
+  @test
+  def error_if_no_ip(self):
+    parser = Parser()
+    out = parser.parse("""
+      foo:
+        type: host
+    """)

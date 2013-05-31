@@ -1,6 +1,9 @@
 import yaml
 from holst.core import Host, Service, HostGroup
 
+class UndefinedHostException(Exception):
+  pass
+
 class Parser():
   
   def __init__(self):
@@ -30,11 +33,11 @@ class Parser():
 
   def validate_hostgroup(self, hostgroup):
     if hostgroup.name in hostgroup.hosts:
-      raise Exception("Hostgroup cannot contain itself")
+      raise UndefinedHostException("Hostgroup cannot contain itself")
 
     for host in hostgroup.hosts:
       if not host in self.hosts.keys():
-        raise Exception("Undefined host in hostgroup")
+        raise UndefinedHostException("Undefined host in hostgroup: %s" % host)
 
   def validate_service(self, service):
     if type(service) is dict:
@@ -45,7 +48,7 @@ class Parser():
         return
 
       if not hosts <= self.hosts.keys():
-        raise Exception("Undefined host")
+        raise UndefinedHostException("Undefined host")
 
       if not service_name in self.services.keys():
         raise Exception("Undefined service")

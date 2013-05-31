@@ -1,3 +1,6 @@
+class MissingDataException(Exception):
+  pass
+
 class Host():
 
   services = []
@@ -6,7 +9,7 @@ class Host():
     self.hostname = hostname
 
     if "ip" not in props.keys():
-      raise Exception("No ip defined for host")
+      raise MissingDataException("No ip defined for host")
 
     self.ip = props["ip"]
 
