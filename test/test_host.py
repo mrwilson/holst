@@ -45,3 +45,18 @@ class HostTest(unittest.TestCase):
       example:
         type: host
     """)
+
+  def define_services_from_host(self):
+    parser = Parser()
+    parser.parse("""
+      example:
+        type: host
+        ip: [1.2.3.4]
+        services:
+          example_service: [all]
+
+      example_service:
+        type: service
+    """)
+
+    assert "example_service" in parser.hosts("example").get_services()

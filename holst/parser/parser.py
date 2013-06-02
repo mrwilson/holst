@@ -50,32 +50,6 @@ class Parser():
     if not service_name in self.services.keys():
       raise Exception("Undefined service - %s" % service_name)
 
-  def nat_header(self):
-    return ["*nat",
-            ":PREROUTING ACCEPT",
-            ":POSTROUTING ACCEPT",
-            ":OUTPUT ACCEPT"]
-
-  def filter_header(self, hostname):
-    header = [["*filter",
-              ":INPUT DROP",
-              ":OUTPUT ACCEPT",
-              ":FORWARD DROP"]]
-
-    host = self.hosts.get(hostname)
-
-    service_chains = []
-
-    if type(host.services) is dict:
-      service_chains.append(":%s -" % host.services.keys()[0])
-    else:
-      for service in host.services:
-        service_chains.append(":%s -" % service.keys()[0])
-
-    header.append(service_chains)
-
-    return header
-
   def get_chains(self, hostname):
     chains = []
 

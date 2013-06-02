@@ -1,5 +1,5 @@
-import sys
-import argparse
+import sys, argparse
+from jinja2 import Environment, PackageLoader
 from holst.parser import Parser
 
 def main():
@@ -7,6 +7,7 @@ def main():
   argparser.add_argument('templatefile', help='template file to read data from')
   argparser.add_argument('hostname', help='name of host to generate files for')
   argparser.add_argument('--allow-established', help='accept established connections by default', action="store_true")
+  argparser.add_argument('--nat-header', help='add default nat rules to the rule file', action="store_true")
 
   args = argparser.parse_args()
   process(args)
@@ -17,36 +18,27 @@ def process(args):
 
   parser = Parser()
 
-  try:
-    with open(templatefile) as template_file:
-      parser.parse(template_file.read())
+  with open(templatefile) as template_file:
+    parser.parse(template_file.read())
 
-      for line in parser.nat_header():
-        print line
+    kwargs = {  "nat": False,
+                "chains" : [],
+                "accept_established": False,
+                "rules": [],
+                "hosts": []
+    }
 
-      print "\nCOMMIT\n"
+    if args.allow_established:
+      kwargs["accept_established"] = True
 
-      for header in parser.filter_header(hostname):
-        for rule in header:
-          print rule
-        print ""
+    if args.nat_header:
+      kwargs["nat"] = True
 
-      if args.allow_established:
-        print "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"
-        print ""
+    kwargs["chains"] = parser.hosts[hostname].get_services()
 
-      for chain in parser.get_chains(hostname):
-        print chain
+    print render(kwargs)
 
-      print ""
-
-      for ruleset in parser.get_rules_for(hostname):
-        for rule in ruleset:
-          print rule
-        print ""
-
-      print "COMMIT"
-  except IOError:
-    print 'Cannot access file: %s' % args.templatefile
-    sys.exit(1)
-
+def render(kwargs):
+  env = Environment(loader=PackageLoader('holst', 'templates'), trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=False)
+  template = env.get_template("rules.tpl")
+  return template.render(kwargs)
