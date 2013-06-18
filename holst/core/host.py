@@ -18,6 +18,12 @@ class Host():
 
   def get_services(self):
     if type(self.services) is dict:
+      return [self.services]
+    else:
+      return self.services
+
+  def get_service_names(self):
+    if type(self.services) is dict:
       return self.services.keys()
     else:
       return [service.keys()[0] for service in self.services]

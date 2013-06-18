@@ -46,6 +46,7 @@ class HostTest(unittest.TestCase):
         type: host
     """)
 
+  @test
   def define_services_from_host(self):
     parser = Parser()
     parser.parse("""
@@ -59,4 +60,4 @@ class HostTest(unittest.TestCase):
         type: service
     """)
 
-    assert "example_service" in parser.hosts("example").get_services()
+    assert "example_service" in parser.hosts.get("example").get_service_names()

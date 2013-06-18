@@ -23,7 +23,7 @@ class Parser():
         self.services[k] = Service(k,v)
 
     for host in self.hosts.values():
-      for service in host.services:
+      for service in host.get_services():
         self.validate_service(service)
 
     for hostgroup in self.hostgroups.values():
@@ -38,7 +38,7 @@ class Parser():
         raise UndefinedHostException("Undefined host in hostgroup: %s" % host)
 
   def validate_service(self, service):
-    service_name = service.keys()[0];
+    service_name = service.keys()[0]
     hosts = service[service_name]
 
     if len(hosts) == 1 and hosts[0] == "all":
@@ -57,8 +57,7 @@ class Parser():
 
     if len(host.services) == 1:
       service = host.services[0].keys()[0]
-      chains.extend(self.services[service].get_chain())
-      return chains
+      return [self.services[service].get_chain()]
 
     for service_obj in host.services:
       service = service_obj.keys()[0]

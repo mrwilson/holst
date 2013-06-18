@@ -21,7 +21,7 @@ def process(args):
   with open(templatefile) as template_file:
     parser.parse(template_file.read())
 
-    kwargs = {  "nat": False,
+    opts = {  "nat": False,
                 "chains" : [],
                 "accept_established": False,
                 "rules": [],
@@ -29,16 +29,16 @@ def process(args):
     }
 
     if args.allow_established:
-      kwargs["accept_established"] = True
+      opts["accept_established"] = True
 
     if args.nat_header:
-      kwargs["nat"] = True
+      opts["nat"] = True
 
-    kwargs["chains"] = parser.hosts[hostname].get_services()
+    opts["chains"] = parser.hosts[hostname].get_service_names()
 
-    print render(kwargs)
+    print render(opts)
 
-def render(kwargs):
-  env = Environment(loader=PackageLoader('holst', 'templates'), trim_blocks=True, lstrip_blocks=True, keep_trailing_newline=False)
+def render(opts):
+  env = Environment(loader=PackageLoader('holst', 'templates'), trim_blocks=True, lstrip_blocks=True)
   template = env.get_template("rules.tpl")
-  return template.render(kwargs)
+  return template.render(opts)

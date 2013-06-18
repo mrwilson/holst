@@ -15,6 +15,8 @@ COMMIT
 {% for chain in chains %}
 :{{ chain }} - 
 {% endfor %}
+
 {% for rule in rules %}
 -A INPUT -p {{ rule.protocol }} -m {{ rule.module }} {{ rule.ports }} -m state --state NEW -j {{ rule.name }} 
 {% endfor %}
+COMMIT
