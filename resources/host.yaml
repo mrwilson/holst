@@ -1,7 +1,9 @@
 example_host:
   type: host
   ip: [1.2.3.4]
-  services:
+  input:
+    - example_service: [all]
+  output:
     - example_service: [all]
 
 example_service:

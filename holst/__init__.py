@@ -1,6 +1,6 @@
 import sys, argparse
 from jinja2 import Environment, PackageLoader
-from holst.parser import Parser
+from holst.parser import YAMLParser
 
 def main():
   argparser = argparse.ArgumentParser(prog='holst', description='Transform DSL into iptables rule files.')
@@ -16,27 +16,30 @@ def process(args):
   templatefile = args.templatefile
   hostname = args.hostname
 
-  parser = Parser()
+  parser = YAMLParser()
+  parser.load(templatefile)
+  parser.parse()
 
-  with open(templatefile) as template_file:
-    parser.parse(template_file.read())
+  opts = {  "nat": False,
+              "chains" : [],
+              "accept_established": False,
+              "incoming_rules": [],
+              "outgoing_rules": [],
+              "hosts": []
+  }
 
-    opts = {  "nat": False,
-                "chains" : [],
-                "accept_established": False,
-                "rules": [],
-                "hosts": []
-    }
+  if args.allow_established:
+    opts["accept_established"] = True
 
-    if args.allow_established:
-      opts["accept_established"] = True
+  if args.nat_header:
+    opts["nat"] = True
 
-    if args.nat_header:
-      opts["nat"] = True
+  opts["chains"] = parser.chains(hostname)
 
-    opts["chains"] = parser.hosts[hostname].get_service_names()
-
-    print render(opts)
+  opts["incoming_rules"] = parser.incoming_rules(hostname)
+  opts["outgoing_rules"] = parser.outgoing_rules(hostname)
+   
+  print render(opts)
 
 def render(opts):
   env = Environment(loader=PackageLoader('holst', 'templates'), trim_blocks=True, lstrip_blocks=True)

@@ -3,7 +3,8 @@ class MissingDataException(Exception):
 
 class Host():
 
-  services = []
+  services_outgoing = []
+  services_incoming = []
   
   def __init__(self, hostname, props):
     self.hostname = hostname
@@ -13,17 +14,26 @@ class Host():
 
     self.ip = props["ip"]
 
-    if "services" in props.keys():
-      self.services = props["services"]
+    if "output" in props.keys():
+      if type(props["output"]) is dict:
+        self.services_outgoing = [props["output"]]
+      else:
+        self.services_outgoing = props["output"]
+
+    if "input" in props.keys():
+      if type(props["input"]) is dict:
+        self.services_incoming = [props["input"]]
+      else:
+        self.services_incoming = props["input"]
 
   def get_services(self):
-    if type(self.services) is dict:
-      return [self.services]
-    else:
-      return self.services
+    return self.services_incoming + self.services_outgoing
+
+  def incoming_service_names(self):
+    return ["%s_in" % service.keys()[0] for service in self.services_incoming]
 
   def get_service_names(self):
-    if type(self.services) is dict:
-      return self.services.keys()
-    else:
-      return [service.keys()[0] for service in self.services]
+    return self.outgoing_service_names() + self.incoming_service_names()
+
+  def outgoing_service_names(self):
+    return ["%s_out" % service.keys()[0] for service in self.services_outgoing]

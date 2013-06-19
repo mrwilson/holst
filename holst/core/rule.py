@@ -2,19 +2,16 @@ class Rule(object):
 
   def __init__(self, obj, service_name, hosts=None):
     self.operation, rule = obj.popitem()
-    self.dport = rule[1:]
+    
+    if len(rule) <= 1:
+      raise Exception("No ports specified rule in %s" % service_name)
+
+    self.protocol = rule[0]
+    self.ports = ",".join([str(x) for x in rule[1:]])
     self.hosts = hosts
     self.name = service_name
 
-  def get_rules(self):
-
     if self.hosts == ["all"]:
-      return ["-A %s -j %s" % (self.name, self.operation.upper())]
-
-    rules = []
-
-    for host in self.hosts:
-      for ip in host.ip:
-        rules.append("-A %s -s %s -j %s" % (self.name, ip, self.operation.upper()))
-
-    return rules
+      self.source = []
+    else:
+      self.source = [ip for ip in host.ip for host in hosts]
