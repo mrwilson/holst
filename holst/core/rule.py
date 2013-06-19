@@ -1,11 +1,12 @@
 class Rule(object):
 
   def __init__(self, obj, service_name, hosts=None):
-    self.operation, rule = obj.popitem()
+    operation, rule = obj.popitem()
     
     if len(rule) <= 1:
       raise Exception("No ports specified rule in %s" % service_name)
 
+    self.operation = operation.upper()
     self.protocol = rule[0]
     self.ports = ",".join([str(x) for x in rule[1:]])
     self.hosts = hosts
