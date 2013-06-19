@@ -10,14 +10,20 @@ COMMIT
 *filter
 :INPUT DROP
 :FORWARD DROP
-:OUTPUT ACCEPT
+:OUTPUT DROP
 
 {% for chain in chains %}
 :{{ chain }} - 
 {% endfor %}
 
-{% if allow_established %}
+{% if loopback %}
+-A OUTPUT -o lo -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+{% endif %}
+
+{% if accept_established %}
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 {% endif %}
 
 {% for rule in incoming_rules %}
