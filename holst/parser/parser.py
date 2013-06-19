@@ -1,6 +1,9 @@
 import yaml
 from holst.core import Host, Service, HostGroup
 
+class UnknownTypeException(Exception):
+  pass
+
 class UndefinedHostException(Exception):
   pass
 
@@ -18,12 +21,17 @@ class YAMLParser():
 
   def parse(self):
     for k,v in self.obj.iteritems():
+      if "type" not in v.keys():
+        raise UnknownTypeException("Type not defined for '%s'" % k)
+
       if v["type"] == "host":
         self.hosts[k] = Host(k, v)
       elif v["type"] == "hostgroup":
         self.hostgroups[k] = HostGroup(k, v)
-      else:
+      elif v["type"] == "service":
         self.services[k] = Service(k,v)
+      else:
+        raise UnknownTypeException("Could not parse type of '%s'" % v["type"])
 
     self.validate()
 

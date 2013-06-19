@@ -2,4 +2,8 @@ class HostGroup():
 
   def __init__(self, name, obj):
     self.name = name
-    self.hosts = obj["hosts"]
+
+    if "hosts" in obj.keys():
+      self.hosts = obj["hosts"]
+    else:
+      self.hosts = []
