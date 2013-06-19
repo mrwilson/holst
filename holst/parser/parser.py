@@ -58,7 +58,9 @@ class YAMLParser():
     if len(hosts) == 1 and hosts[0] == "all":
       return
 
-    missing_hosts = [host for host in hosts if host not in self.hosts.keys()]
+    missing_hosts = [host for host in hosts
+                          if host not in self.hosts.keys()
+                         and host not in self.hostgroups.keys()]
 
     if missing_hosts:
       raise UndefinedHostException("Undefined host(s) - %s" % ','.join(missing_hosts))
