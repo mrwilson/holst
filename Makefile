@@ -1,16 +1,16 @@
 REQUIREMENTS=./requirements.txt
 SETUP=./setup.py
 
-all: install-deps test clean install
+all: install
 
-install:
+install: tests clean
 	@python $(SETUP) install
 
-tests:
+tests: install-deps
 	@nosetests
 
 install-deps:
-	@pip install -r $(REQUIREMENTS)
+	@pip install --upgrade -q -r $(REQUIREMENTS)
 
 clean:
 	@find . -name '*.pyc' | xargs rm
