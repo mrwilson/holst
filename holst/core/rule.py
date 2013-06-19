@@ -14,4 +14,4 @@ class Rule(object):
     if self.hosts == ["all"]:
       self.source = []
     else:
-      self.source = [ip for ip in host.ip for host in hosts]
+      self.source = [ip for host in hosts for ip in host.ip]

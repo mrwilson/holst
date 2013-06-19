@@ -35,9 +35,13 @@ COMMIT
 {% endfor %}
 
 {% for rule in outgoing_rules %}
-{% for ip in rule.source %}
+  {% if rule.source %}
+    {% for ip in rule.source %}
 -A {{ rule.name }} --source {{ ip }} -j {{ rule.operation }}
-{% endfor %}
+    {% endfor %}
+  {% else %}
+-A {{ rule.name }} -j {{ rule.operation }}
+  {% endif %}
 {% endfor %}
 
 COMMIT

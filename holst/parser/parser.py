@@ -58,8 +58,10 @@ class YAMLParser():
     if len(hosts) == 1 and hosts[0] == "all":
       return
 
-    if not hosts <= self.hosts.keys():
-      raise UndefinedHostException("Undefined host")
+    missing_hosts = [host for host in hosts if host not in self.hosts.keys()]
+
+    if missing_hosts:
+      raise UndefinedHostException("Undefined host(s) - %s" % ','.join(missing_hosts))
 
     if not service_name in self.services.keys():
       raise Exception("Undefined service - %s" % service_name)
