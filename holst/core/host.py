@@ -27,7 +27,7 @@ class Host():
         self.services_incoming = props["input"]
 
   def get_services(self):
-    return self.services_incoming + self.services_outgoing
+    return self.services_outgoing + self.services_incoming
 
   def incoming_service_names(self):
     return ["%s_in" % service.keys()[0] for service in self.services_incoming]
