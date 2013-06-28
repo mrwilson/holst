@@ -18,9 +18,9 @@ A yaml-based dsl for iptables.
         type: host
         ip: [1.2.3.4]
         input:
-            ssh: [all]
+            - ssh: [all]
         output:
-            ssh: [other_host]
+            - ssh: [other_host]
 
 ## Service
 
