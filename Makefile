@@ -14,3 +14,4 @@ install-deps:
 
 clean:
 	@find . -name '*.pyc' | xargs rm
+	@rm -rf build dist *.egg-info
