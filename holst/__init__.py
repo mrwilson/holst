@@ -44,7 +44,7 @@ def process(args):
   opts["incoming_rules"] = parser.incoming_rules(hostname)
   opts["outgoing_rules"] = parser.outgoing_rules(hostname)
    
-  print render(opts)
+  print(render(opts))
 
 def render(opts):
   env = Environment(loader=PackageLoader('holst', 'templates'), trim_blocks=True, lstrip_blocks=True)
