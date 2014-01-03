@@ -10,7 +10,7 @@ tests: install-deps
 	@nosetests
 
 install-deps:
-	@pip install --upgrade -q -r $(REQUIREMENTS)
+	@pip install -q -r $(REQUIREMENTS)
 
 clean:
 	@find . -name '*.pyc' | xargs rm
